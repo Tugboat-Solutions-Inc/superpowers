@@ -103,6 +103,26 @@ git commit -m "feat: add specific feature"
 ```
 ````
 
+## Verify Before You Specify
+
+**Every specific implementation choice in a plan must be verified before it is written down.** Specificity is required — the implementer is in tunnel vision by design and does not have the orchestrator's view of how pieces connect. Leaving things ambiguous does not give the implementer freedom to make a better call; it gives them freedom to make an uninformed one.
+
+But unverified specificity is worse than a description, because it looks authoritative and gets followed without question — straight through spec review and into production.
+
+**Before writing any code block into a plan step, answer this question:**
+
+> "What is the execution context at the moment this code runs, and what does this code assume about that context? Is that assumption guaranteed to hold?"
+
+For UI/component code: What is the component lifecycle at the moment this renders? What values do the props actually hold at that moment — not the moment you're imagining them?
+
+For data flow code: What does the response/input actually contain at this point in the call chain — not what you intend it to contain?
+
+For state mutations: What is the current state shape when this runs? Does anything else mutate it between now and then?
+
+**If you cannot answer the question specifically, you have not verified the implementation yet.** Do the verification first — read the actual file, trace the actual call path, check the actual lifecycle — then write the code. The answer to the verification question should appear as a one-line comment in the plan step: `// verified: textarea mounts after isLoading=false, so value prop is stable at mount time`.
+
+**The failure mode to avoid:** Writing implementation code in "specification mode" — focused on what the code should look like structurally — rather than "execution mode" — focused on whether it will actually work. These feel the same from the inside. The verification question forces the switch.
+
 ## No Placeholders
 
 Every step must contain the actual content an engineer needs. These are **plan failures** — never write them:
